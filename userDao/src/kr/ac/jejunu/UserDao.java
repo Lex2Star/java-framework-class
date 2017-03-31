@@ -9,10 +9,6 @@ public class UserDao {
 
     private ConnectionMaker connectionMaker;
 
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
-    }
-
     public User get(Long id) throws SQLException, ClassNotFoundException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -22,8 +18,11 @@ public class UserDao {
         try{
             connection = connectionMaker.getConnection();
 
-            preparedStatement = connection.prepareStatement("select * from userinfo where id = ?");
-            preparedStatement.setLong(1, id);
+            StatementStrategy statementStrategy = new GetUserStatement();
+            preparedStatement = statementStrategy.makeStatement(id, connection);
+
+//            preparedStatement = connection.prepareStatement("select * from userinfo where id = ?");
+//            preparedStatement.setLong(1, id);
             resultSet = preparedStatement.executeQuery();
 
             if(resultSet.next()){
@@ -74,9 +73,12 @@ public class UserDao {
         try {
             connection = connectionMaker.getConnection();
 
-            preparedStatement = connection.prepareStatement("insert into userinfo(name, password) VALUES (?,?)");
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getPassword());
+            StatementStrategy statementStrategy = new AddUserStatement();
+            preparedStatement = statementStrategy.makeStatement(user, connection);
+
+//            preparedStatement = connection.prepareStatement("insert into userinfo(name, password) VALUES (?,?)");
+//            preparedStatement.setString(1, user.getName());
+//            preparedStatement.setString(2, user.getPassword());
             preparedStatement.executeUpdate();
 
             preparedStatement = connection.prepareStatement("select last_insert_id()");
@@ -123,10 +125,13 @@ public class UserDao {
         try {
             connection = connectionMaker.getConnection();
 
-            preparedStatement = connection.prepareStatement("update userinfo set name = ?, password = ? where id = ?");
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setLong(3, user.getId());
+            StatementStrategy statementStrategy = new UpdateUserStatement();
+            preparedStatement = statementStrategy.makeStatement(user, connection);
+
+//            preparedStatement = connection.prepareStatement("update userinfo set name = ?, password = ? where id = ?");
+//            preparedStatement.setString(1, user.getName());
+//            preparedStatement.setString(2, user.getPassword());
+//            preparedStatement.setLong(3, user.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -160,8 +165,11 @@ public class UserDao {
         try{
             connection = connectionMaker.getConnection();
 
-            preparedStatement = connection.prepareStatement("delete from userinfo where id = ?");
-            preparedStatement.setLong(1, id);
+            StatementStrategy statementStrategy = new DeleteUserStatement();
+            preparedStatement = statementStrategy.makeStatement(id, connection);
+
+//            preparedStatement = connection.prepareStatement("delete from userinfo where id = ?");
+//            preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -185,5 +193,9 @@ public class UserDao {
                 }
             }
         }
+    }
+
+    public void setConnectionMaker(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
     }
 }
