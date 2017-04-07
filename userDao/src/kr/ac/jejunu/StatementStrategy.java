@@ -9,5 +9,5 @@ import java.util.Objects;
  * Created by hyunki on 2017. 3. 31..
  */
 public interface StatementStrategy {
-    public PreparedStatement makeStatement(Object object, Connection connection) throws SQLException;
+    public PreparedStatement makeStatement(Connection connection) throws SQLException;
 }
