@@ -2,6 +2,7 @@ package kr.ac.jejunu;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by hyunki on 2017. 3. 15..
@@ -19,43 +20,98 @@ public class UserDao {
         this.dataSource = dataSource;
     }
 
-    public User get(Long id) throws SQLException, ClassNotFoundException {
-        Connection connection = dataSource.getConnection();
+    public User get(Long id) throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        User user = null;
 
-        StatementStrategy statementStrategy = new GetUserStatement();
-        PreparedStatement preparedStatement = statementStrategy.makeStatement(id, connection);
-        ResultSet resultSet = preparedStatement.executeQuery();
+        try {
+            connection = dataSource.getConnection();
 
-        resultSet.next();
+            StatementStrategy statementStrategy = new GetUserStatement();
+            preparedStatement = statementStrategy.makeStatement(id, connection);
+            resultSet = preparedStatement.executeQuery();
 
-        User user = new User();
-        user.setId(resultSet.getLong("id"));
-        user.setName(resultSet.getString("name"));
-        user.setPassword(resultSet.getString("password"));
-
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
+            if (resultSet.next()){
+                user = new User();
+                user.setId(resultSet.getLong("id"));
+                user.setName(resultSet.getString("name"));
+                user.setPassword(resultSet.getString("password"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         return user;
     }
 
 
     public Long add(User user) throws ClassNotFoundException, SQLException {
-        Connection connection = dataSource.getConnection();
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Long id = null;
+        try {
+            connection = dataSource.getConnection();
 
-        StatementStrategy statementStrategy = new AddUserStatement();
-        PreparedStatement preparedStatement = statementStrategy.makeStatement(user, connection);
-        preparedStatement.executeUpdate();
+            StatementStrategy statementStrategy = new AddUserStatement();
+            preparedStatement = statementStrategy.makeStatement(user, connection);
+            preparedStatement.executeUpdate();
 
-        preparedStatement = connection.prepareStatement("select last_insert_id()");
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        Long id = resultSet.getLong(1);
-
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
+            preparedStatement = connection.prepareStatement("select last_insert_id()");
+            resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            id = resultSet.getLong(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         return id;
     }
