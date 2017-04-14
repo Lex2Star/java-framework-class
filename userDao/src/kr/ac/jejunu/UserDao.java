@@ -75,6 +75,7 @@ public class UserDao {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         Long id = null;
+
         try {
             connection = dataSource.getConnection();
 
@@ -114,5 +115,36 @@ public class UserDao {
         }
 
         return id;
+    }
+
+    public void delete(Long id) throws ClassNotFoundException, SQLException{
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            connection = dataSource.getConnection();
+
+            StatementStrategy statementStrategy = new DeletUserStatement();
+            preparedStatement = statementStrategy.makeStatement(id, connection);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
