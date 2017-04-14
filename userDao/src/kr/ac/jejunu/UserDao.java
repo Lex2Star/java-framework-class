@@ -1,22 +1,29 @@
 package kr.ac.jejunu;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 /**
  * Created by hyunki on 2017. 3. 15..
  */
 public class UserDao {
-    private ConnectionMaker connectionMaker;
+//    private ConnectionMaker connectionMaker;
 
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
+//    public UserDao(ConnectionMaker connectionMaker) {
+//        this.connectionMaker = connectionMaker;
+//    }
+
+    private DataSource dataSource;
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public User get(Long id) throws SQLException, ClassNotFoundException {
-        Connection connection = connectionMaker.getConnection();
+        Connection connection = dataSource.getConnection();
 
-        PreparedStatement preparedStatement = connection.prepareStatement("select * from userinfo where id = ?");
-        preparedStatement.setLong(1, id);
+        StatementStrategy statementStrategy = new GetUserStatement();
+        PreparedStatement preparedStatement = statementStrategy.makeStatement(id, connection);
         ResultSet resultSet = preparedStatement.executeQuery();
 
         resultSet.next();
@@ -33,12 +40,12 @@ public class UserDao {
         return user;
     }
 
-    public Long add(User user) throws ClassNotFoundException, SQLException {
-        Connection connection = connectionMaker.getConnection();
 
-        PreparedStatement preparedStatement = connection.prepareStatement("insert into userinfo(name, password) VALUES (?,?)");
-        preparedStatement.setString(1, user.getName());
-        preparedStatement.setString(2, user.getPassword());
+    public Long add(User user) throws ClassNotFoundException, SQLException {
+        Connection connection = dataSource.getConnection();
+
+        StatementStrategy statementStrategy = new AddUserStatement();
+        PreparedStatement preparedStatement = statementStrategy.makeStatement(user, connection);
         preparedStatement.executeUpdate();
 
         preparedStatement = connection.prepareStatement("select last_insert_id()");
