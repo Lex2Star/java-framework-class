@@ -5,7 +5,7 @@ import java.sql.*;
 /**
  * Created by hyunki on 2017. 3. 15..
  */
-public class UserDao {
+public abstract class UserDao {
 
     public User get(Long id) throws SQLException, ClassNotFoundException {
         Connection connection = getConnection();
@@ -62,9 +62,5 @@ public class UserDao {
         connection.close();
     }
 
-    private Connection getConnection() throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/jeju?characterEncoding=utf-8", "jeju", "jejupw");
-        return connection;
-    }
+    public abstract Connection getConnection() throws SQLException, ClassNotFoundException;
 }
