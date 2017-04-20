@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.*;
 public class UserDaoTest {
     @Test
     public void get() throws SQLException, ClassNotFoundException {
-        int id = 1;
+        Long id = 1L;
         String name = "이현기";
         String password = "1111";
 
@@ -28,8 +28,7 @@ public class UserDaoTest {
     @Test
     public void add() throws SQLException, ClassNotFoundException {
         User user = new User();
-        Random random = new Random();
-        int id = random.nextInt();
+        Long id = Long.valueOf(new Random().nextInt());
         String name = "lex";
         String password = "2222";
 

@@ -4,15 +4,15 @@ package kr.ac.jejunu;
  * Created by hyunki on 2017. 3. 15..
  */
 public class User {
-    private int id;
+    private Long id;
     private String name;
     private String password;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
