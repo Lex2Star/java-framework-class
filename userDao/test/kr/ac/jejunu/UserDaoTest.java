@@ -18,7 +18,7 @@ public class UserDaoTest {
         String name = "이현기";
         String password = "1111";
 
-        UserDao userDao = new JejuUserDao();
+        UserDao userDao = new UserDao(new JejuUserDao());
         User user = userDao.get(id);
         assertThat(id, is(user.getId()));
         assertThat(name, is(user.getName()));
@@ -36,7 +36,7 @@ public class UserDaoTest {
         user.setName(name);
         user.setPassword(password);
 
-        UserDao userDao = new JejuUserDao();
+        UserDao userDao = new UserDao(new JejuUserDao());
         userDao.add(user);
 
         User user1 = userDao.get(id);
