@@ -3,6 +3,7 @@ package kr.ac.jejunu;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -13,7 +14,7 @@ import static org.hamcrest.MatcherAssert.*;
 public class UserDaoTest {
     @Test
     public void get() throws SQLException, ClassNotFoundException {
-        Long id = 1L;
+        int id = 1;
         String name = "이현기";
         String password = "1111";
 
@@ -27,14 +28,17 @@ public class UserDaoTest {
     @Test
     public void add() throws SQLException, ClassNotFoundException {
         User user = new User();
+        Random random = new Random();
+        int id = random.nextInt();
         String name = "lex";
         String password = "2222";
 
+        user.setId(id);
         user.setName(name);
         user.setPassword(password);
 
         UserDao userDao = new UserDao();
-        Long id = userDao.add(user);
+        userDao.add(user);
 
         User user1 = userDao.get(id);
         assertThat(id, is(user1.getId()));
