@@ -28,4 +28,25 @@ public class UserDao {
 
         return user;
     }
+
+    public Long add(User user) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/jeju?characterEncoding=utf-8", "jeju", "jejupw");
+
+        PreparedStatement preparedStatement = connection.prepareStatement("insert into userinfo(name, password) values (?, ?)");
+        preparedStatement.setString(1, user.getName());
+        preparedStatement.setString(2, user.getPassword());
+        preparedStatement.executeUpdate();
+
+        preparedStatement = connection.prepareStatement("select last_insert_id()");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        Long id = resultSet.getLong(1);
+
+        resultSet.close();
+        preparedStatement.close();
+        connection.close();
+
+        return id;
+    }
 }
