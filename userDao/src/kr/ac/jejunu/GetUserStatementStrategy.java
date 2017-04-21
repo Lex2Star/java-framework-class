@@ -8,11 +8,17 @@ import java.sql.SQLException;
  * Created by hyunki on 2017. 4. 21..
  */
 public class GetUserStatementStrategy implements StatementStrategy {
+    private Long id;
+
+    public GetUserStatementStrategy(Long id) {
+        this.id = id;
+    }
+
     @Override
-    public PreparedStatement makeStatement(Object object, Connection connection) throws SQLException {
-        Long id = (Long)object;
+    public PreparedStatement makeStatement(Connection connection) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("select * from userinfo where id = ?");
         preparedStatement.setLong(1, id);
         return preparedStatement;
+
     }
 }
