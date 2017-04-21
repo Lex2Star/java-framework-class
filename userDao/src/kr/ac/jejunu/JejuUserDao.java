@@ -8,6 +8,42 @@ import java.sql.SQLException;
  * Created by hyunki on 2017. 4. 21..
  */
 public class JejuUserDao implements ConnectionMaker {
+    private String id;
+    private String password;
+    private String url;
+    private String className;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
     @Override
     public Connection getConnection() throws ClassNotFoundException, SQLException {
