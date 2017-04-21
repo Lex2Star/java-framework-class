@@ -60,7 +60,7 @@ public class UserDaoTest {
     @Test
     public void delete() throws SQLException, ClassNotFoundException {
         User user = new User();
-        Long id = 3L;
+        Long id = 5L;
         String name = "lex";
         String password = "2222";
 
