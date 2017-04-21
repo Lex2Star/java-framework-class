@@ -28,12 +28,12 @@ public class UserDao {
             preparedStatement.setLong(1, id);
             resultSet = preparedStatement.executeQuery();
 
-            resultSet.next();
-
-            user = new User();
-            user.setId(resultSet.getLong("id"));
-            user.setName(resultSet.getString("name"));
-            user.setPassword(resultSet.getString("password"));
+            if(resultSet.next()) {
+                user = new User();
+                user.setId(resultSet.getLong("id"));
+                user.setName(resultSet.getString("name"));
+                user.setPassword(resultSet.getString("password"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             throw e;
@@ -62,6 +62,28 @@ public class UserDao {
             preparedStatement.setLong(1, user.getId());
             preparedStatement.setString(2, user.getName());
             preparedStatement.setString(3, user.getPassword());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+    }
+
+    public void delete(Long id) throws SQLException, ClassNotFoundException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = dataSource.getConnection();
+
+            preparedStatement = connection.prepareStatement("DELETE FROM userinfo WHERE id = ?");
+            preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
