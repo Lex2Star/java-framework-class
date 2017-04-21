@@ -24,20 +24,14 @@ public class UserDao {
 
 
     public void add(User user) throws SQLException, ClassNotFoundException {
-        jdbcContext.jdbcContextWithStatementStrategyForUpdate(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO userinfo(id, name, password) VALUES (?, ?, ?)");
-            preparedStatement.setLong(1, user.getId());
-            preparedStatement.setString(2, user.getName());
-            preparedStatement.setString(3, user.getPassword());
-            return preparedStatement;
-        });
+        String sql = "INSERT INTO userinfo(id, name, password) VALUES (?, ?, ?)";
+        Object[] params = {user.getId(), user.getName(), user.getPassword()};
+        jdbcContext.update(sql, params);
     }
 
     public void delete(Long id) throws SQLException, ClassNotFoundException {
-        jdbcContext.jdbcContextWithStatementStrategyForUpdate(connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM userinfo WHERE id = ?");
-            preparedStatement.setLong(1, id);
-            return preparedStatement;
-        });
+        String sql = "DELETE FROM userinfo WHERE id = ?";
+        Object[] params = {id};
+        jdbcContext.update(sql, params);
     }
 }
