@@ -55,4 +55,22 @@ public class UserDaoTest {
         assertThat(user1.getPassword(), is(password));
     }
 
+    @Test
+    public void delete() throws SQLException, ClassNotFoundException {
+        User user = new User();
+        Long id = Long.valueOf(new Random().nextInt(Integer.MAX_VALUE));
+        String name = "lex";
+        String password = "2222";
+
+        user.setId(id);
+        user.setName(name);
+        user.setPassword(password);
+
+        userDao.add(user);
+        userDao.delete(id);
+        User user1 = userDao.get(id);
+
+        assertThat(user1, is(nullValue()));
+    }
+
 }
