@@ -1,6 +1,5 @@
 package kr.ac.jejunu;
 
-import javax.sql.DataSource;
 import java.sql.*;
 
 /**
@@ -16,20 +15,31 @@ public class UserDao {
     public UserDao() { }
 
     public User get(Long id) throws SQLException, ClassNotFoundException {
-        StatementStrategy statementStrategy = new StatementStrategyForGet(id);
-        return jdbcContext.jdbcContextWithStatementStrategyForGet(statementStrategy);
+        return jdbcContext.jdbcContextWithStatementStrategyForGet(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement("select * from userinfo where id = ?");
+            preparedStatement.setLong(1, id);
+            return preparedStatement;
+        });
     }
 
 
 
     public void add(User user) throws SQLException, ClassNotFoundException {
-        StatementStrategy statementStrategy = new StatementStrategyForAdd(user);
-        jdbcContext.jdbcContextWithStatementStrategyForUpdate(statementStrategy);
+        jdbcContext.jdbcContextWithStatementStrategyForUpdate(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO userinfo(id, name, password) VALUES (?, ?, ?)");
+            preparedStatement.setLong(1, user.getId());
+            preparedStatement.setString(2, user.getName());
+            preparedStatement.setString(3, user.getPassword());
+            return preparedStatement;
+        });
     }
 
     public void delete(Long id) throws SQLException, ClassNotFoundException {
-        StatementStrategy statementStrategy = new StatementStrategyForDelete(id);
-        jdbcContext.jdbcContextWithStatementStrategyForUpdate(statementStrategy);
+        jdbcContext.jdbcContextWithStatementStrategyForUpdate(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM userinfo WHERE id = ?");
+            preparedStatement.setLong(1, id);
+            return preparedStatement;
+        });
     }
 
 
